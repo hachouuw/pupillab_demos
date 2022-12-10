@@ -1,6 +1,7 @@
 import zmq
 import time
 import numpy as np
+import msgpack
 # specify the name of the surface you want to use
 surface_name = "dell_window1"
 
@@ -41,54 +42,53 @@ subscriber0.subscribe('gaze.')  # receive all pupil messages
 # subscriber0.subscribe('pupil.1.3d')  # receive all gaze messages
 
 
-# we need a serializer
-import msgpack
+# # we need a serializer
 
-topic, payload = subscriber0.recv_multipart()
-message = msgpack.loads(payload)
+# topic, payload = subscriber0.recv_multipart()
+# message = msgpack.loads(payload)
 
 
-raw_gaze = np.array([message[b'norm_pos']])
-num_pos = raw_gaze.shape[0]
-homogenous_component = np.ones((num_pos, 1))
-pos_homogenous = np.hstack([raw_gaze, homogenous_component])
+# raw_gaze = np.array([message[b'norm_pos']])
+# num_pos = raw_gaze.shape[0]
+# homogenous_component = np.ones((num_pos, 1))
+# pos_homogenous = np.hstack([raw_gaze, homogenous_component])
 
-result_homogenous = pos_homogenous @ np.asarray(np.ones((3,3)))
-result_homogenous /= result_homogenous[:, -1:]  # normalise
-trans_gaze = result_homogenous[:, :-1]  # projection
+# result_homogenous = pos_homogenous @ np.asarray(np.ones((3,3)))
+# result_homogenous /= result_homogenous[:, -1:]  # normalise
+# trans_gaze = result_homogenous[:, :-1]  # projection
 
-# print(f"{topic}: {message}")
-print(raw_gaze)
-print(pos_homogenous)
+# # print(f"{topic}: {message}")
+# print(raw_gaze)
+# print(pos_homogenous)
 
-# print(num_pos)
-print(trans_gaze)
-# print(raw_gaze.shape)
-
+# # print(num_pos)
+# print(trans_gaze)
+# # print(raw_gaze.shape)
 
 
 
-# # while True:
-# t_end = time.time() + 10
-# while time.time() < t_end:
-#     topic, payload = subscriber0.recv_multipart()
-#     # topic1, payload1 = subscriber1.recv_multipart()
-#     # topic2, payload2 = subscriber2.recv_multipart()
-#     message = msgpack.loads(payload)
-#     # message1 = msgpack.loads(payload1)
-#     # message2 = msgpack.loads(payload2)
 
-#     dic = f"{topic}:", raw_gaze
+# while True:
+t_end = time.time() + 10
+while time.time() < t_end:
+    topic, payload = subscriber0.recv_multipart()
+    # topic1, payload1 = subscriber1.recv_multipart()
+    # topic2, payload2 = subscriber2.recv_multipart()
+    message = msgpack.loads(payload)
+    # message1 = msgpack.loads(payload1)
+    # message2 = msgpack.loads(payload2)
 
-#     # print(f"{topic}: {message[b'norm_pos']}")  #the number after gaze.3d. identifies which eye was used to generate the datum
+    # dic = f"{topic}:", raw_gaze
 
-#     if topic == b'pupil.0.3d':
-#         diameter0 = message[b'diameter']
-#     elif topic == b'pupil.1.3d':
-#         diameter1 = message[b'diameter']
-#     else:
-#         raw_gaze = message[b'norm_pos'] #Whether the datum is mapped monocularly or binocularly depends on the confidence of the pair as well as their temporal distance
-#         print(f"{topic}: {raw_gaze}")
+    # # print(f"{topic}: {message[b'norm_pos']}")  #the number after gaze.3d. identifies which eye was used to generate the datum
+
+    # if topic == b'pupil.0.3d':
+    #     diameter0 = message[b'diameter']
+    # elif topic == b'pupil.1.3d':
+    #     diameter1 = message[b'diameter']
+    # else:
+    #     raw_gaze = message[b'norm_pos'] #Whether the datum is mapped monocularly or binocularly depends on the confidence of the pair as well as their temporal distance
+    #     print(f"{topic}: {raw_gaze}")
 
     
 
@@ -148,7 +148,7 @@ else:
     raw_x, raw_y = 0.,0.
 
     # print('running',time.time())
-    # print('\n raw x: ', raw_x)
+    print('\n raw x: ', raw_x)
     # print('\n raw y: ', raw_y)
     # print('\n pupil 0 diameter:',message0[b'diameter'],'\n pupil 0 confidence:',message0[b'confidence'],'\n pupil 0 time:',message0[b'timestamp'])
     # print('\n pupil 1 diameter:',message1[b'diameter'],'\n pupil 1 confidence:',message1[b'confidence'],'\n pupil 1 time:',message1[b'timestamp'])

@@ -73,7 +73,9 @@ def main(ip: str = "127.0.01", port: int = 50020, name: str = DEFAULT_NAME):
                     continue  # waiting for first surface detection
                 mapped_gaze.timestamp = message[b"timestamp"]
                 mapped_gaze.confidence = message[b"confidence"]
+                print('topic:', message[b"topic"])
                 print("Mapped gaze location:", mapped_gaze)
+                # print("Mapped gaze location:", mapped_gaze.norm_x)
                 mapped_points.append(mapped_gaze)
 
 
