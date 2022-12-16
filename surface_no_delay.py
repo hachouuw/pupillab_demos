@@ -59,6 +59,7 @@ def main(ip: str = "127.0.01", port: int = 50020, name: str = DEFAULT_NAME):
         # sub.setsockopt_string(zmq.SUBSCRIBE, f"surfaces.{name}")
         sub.subscribe(f"surfaces.{name}")  # receive all pupil messages
         sub.subscribe("gaze")  # receive all pupil messages
+        i = 0
         while True:
             # message = sub.recv_new_message()
             # topic = message.payload["topic"]
@@ -67,6 +68,9 @@ def main(ip: str = "127.0.01", port: int = 50020, name: str = DEFAULT_NAME):
 
             if topic.startswith(b"surfaces"):
                 mapper.update_homography(message[b"img_to_surf_trans"])
+                # print('surface time:', message[b"timestamp"])
+                # i+=1
+                # print(i)
             elif topic.startswith(b"gaze"):
                 mapped_gaze = mapper.gaze_to_surface(message[b"norm_pos"])
                 if mapped_gaze is None:
@@ -77,6 +81,8 @@ def main(ip: str = "127.0.01", port: int = 50020, name: str = DEFAULT_NAME):
                 print("Mapped gaze location:", mapped_gaze)
                 # print("Mapped gaze location:", mapped_gaze.norm_x)
                 mapped_points.append(mapped_gaze)
+                i+=1
+                print(i)
 
 
 @dataclass
